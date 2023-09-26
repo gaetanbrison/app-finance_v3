@@ -256,46 +256,6 @@ list_section_code.append("B4-2")
 
 
 
-##################################################################################
-#################################### PASSWORD ####################################
-##################################################################################
-
-def check_password():
-    """Returns `True` if the user had the correct password."""
-
-    def password_entered():
-        """Checks whether a password entered by the user is correct."""
-        if "password" in st.session_state and st.session_state["password"] == st.secrets["password"]:
-            st.session_state["password_correct"] = True
-            del st.session_state["password"]  # don't store password
-        else:
-            st.session_state["password_correct"] = False
-
-    if "password_correct" not in st.session_state:
-        # First run, show input for password.
-        st.text_input(
-            "Password", type="password", on_change=password_entered, key="password"
-        )
-        return False
-    elif not st.session_state["password_correct"]:
-        # Password not correct, show input + error.
-        st.text_input(
-            "Password", type="password", on_change=password_entered, key="password"
-        )
-        st.error("😕 Password incorrect")
-        return False
-    else:
-        # Password correct.
-        return True
-
-
-if check_password():
-    # st.write("Here goes your normal Streamlit app...")
-    # st.button("Click me")
-
-
-
-
 
 
 
@@ -373,24 +333,6 @@ if check_password():
     default_text = ""
 
 
-
-
-    ######### CONNEXION WITH GOOGLE SHEET API ##########
-
-    scope = [
-            "https://www.googleapis.com/auth/spreadsheets",
-            "https://www.googleapis.com/auth/drive"
-        ]
-
-    ## Connect to google sheet
-    credentials = service_account.Credentials.from_service_account_info(
-        st.secrets["gcp_service_account"],
-        scopes=scope,
-    )
-
-    gc = gspread.authorize(credentials)
-
-    #client = Client(scope=scope, credentials=credentials)
 
 
 
@@ -1039,100 +981,10 @@ if check_password():
         ## SUBMISSION EXERCICE 1
         if st.sidebar.button('**Submit answers Ex1**'):
 
-            if len(session_state["selected_options"]) != 0:
-                select_group = "-".join([str(elem) for elem in session_state["selected_options"]])
+            st.sidebar.info('**Your answers have been submitted !**')
                 
-                answers = [x for x in list_answer if x not in [np.nan,"", None]]
-                count = len(answers)
-
-                # df_1 = pd.DataFrame({
-                # 'Professor': select_teacher,
-                # 'Section': select_code,
-                # 'Group': select_group,
-                # 'Lab': 1,
-                # 'Asset':risky_asset,
-                # # "Stock": risky_asset,
-                # # 'Time': startdate - datetime.now(),
-                # 'Start time':startdate,
-                # 'End time': datetime.now(),
-                # 'Completed':count,
-                # 'Completed %':str(round((count/len(list_answer))*100,1)),
-                # 'Q1_1':answer_1_Q1_1,
-                # 'Q1_2':answer_1_Q1_2,
-                # 'Q1_3':answer_1_Q1_3,
-                # 'Q2_1':answer_1_Q2_1,
-                # 'Q2_2':answer_1_Q2_2,
-                # 'Q2_3':answer_1_Q2_3,
-                # 'Q2_4':answer_1_Q2_4,
-                # 'Q3_1':answer_1_Q3_1,
-                # 'Q3_2':answer_1_Q3_2,
-                # 'Q4_1':answer_1_Q4_1,
-                # 'Q4_2':answer_1_Q4_2,
-                # 'Q4_3':answer_1_Q4_3,
-                # 'Q4_4':answer_1_Q4_4,
-                # 'Q5_1':answer_1_Q5_1,
-                # 'Q5_2':answer_1_Q5_2,
-                # 'Q6_1':answer_1_Q6_1,
-                # 'Q6_2':answer_1_Q6_2,
-                # 'Q6_3':answer_1_Q6_3,
-                # 'Q6_4':answer_1_Q6_4, 
-                # },index=[0])
-
-                # path_results = r"results/"
-
-                # if "App_results_Ex1.csv" not in os.listdir(path_results):
-                #     df_1.to_csv(os.path.join(path_results,"App_results_Ex1.csv"),index=False)
-
-                # else:
-                #     df_old = pd.read_csv(os.path.join(path_results,"App_results_Ex1.csv"))
-                #     result = pd.concat([df_old, df_1], ignore_index=True)
-                #     result.to_csv(os.path.join(path_results,"App_results_Ex1.csv"),index=False)
-
-                # List with answers 
-                list_answers_ = [select_teacher,
-                select_code,
-                select_group,
-                1,
-                risky_asset,
-                str(startdate),
-                str(datetime.now()),
-                count,
-                f"{round((count/len(list_answer))*100,1)}%",
-                answer_1_Q1_1,
-                answer_1_Q1_2,
-                answer_1_Q1_3,
-                answer_1_Q2_1,
-                answer_1_Q2_2,
-                answer_1_Q2_3,
-                answer_1_Q2_4,
-                answer_1_Q3_1,
-                answer_1_Q3_2,
-                answer_1_Q4_1,
-                answer_1_Q4_2,
-                answer_1_Q4_3,
-                answer_1_Q4_4,
-                answer_1_Q5_1,
-                answer_1_Q5_2,
-                answer_1_Q6_1,
-                answer_1_Q6_2,
-                answer_1_Q6_3,
-                answer_1_Q6_4,
-                ]
-                
-
-                ## Append new row to the google sheet
-                sh = gc.open('App-finance-HEC-students-results').sheet1
-                insertRow = list_answers_
-                sh.append_row(insertRow)
-
-                sh_looker = gc.open('App-finance-HEC-students-results').get_worksheet(2)
-                insertRow2 = list_answers_[:9]
-                sh_looker.append_row(insertRow2)
-
-                st.sidebar.info('**Your answers have been submitted !**')
-                
-            else:
-                st.sidebar.info("**Please select at least one student id before submitting your answers !**")
+        else:
+            st.sidebar.info("**Please select at least one student id before submitting your answers !**")
 
 
         ## Hi! PARIS logo
