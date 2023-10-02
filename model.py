@@ -1589,9 +1589,15 @@ if lab_numbers == "02 - Two risky assets":
                 weight_risk2_full.append(wp-w1)
                 weight_riskportfolio.append(wp)
                 weight_riskfree.append(1-wp)
-
-                weight_risk1_portfolioR.append(w1/wp)
-                weight_risk2_portfolioR.append((wp-w1)/wp)
+                if wp != 0:
+                    weight_risk1_portfolioR.append(w1/wp)
+                    weight_risk2_portfolioR.append((wp-w1)/wp)
+                else:
+                    # Handle the case when wp is zero. You can append NaN, None, or some default value.
+                    weight_risk1_portfolioR.append(None)
+                    weight_risk2_portfolioR.append(None)
+                #weight_risk1_portfolioR.append(w1/wp)
+                #weight_risk2_portfolioR.append((wp-w1)/wp)
 
 
 
